@@ -2,35 +2,46 @@
 
 const crypto = require('crypto');
 
-const hashAlgorithm = 'md5';
-const attempts = 0;
-const hashLibrary = {};
+const hashMD5 = 'md5';
+const hashSHA1 = 'sha1';
 
-function getHash(data) {
-  return crypto.createHash(hashAlgorithm).update(data).digest('hex');
+let attempts = 0;
+const hashStorage = {};
+
+function getHash(data, hashAlgorithm) {
+  return crypto
+    .createHash(hashAlgorithm)
+    .update(data)
+    .digest('hex')
+    .substring(0, 8); // cut hash to reduce number of attemptions !!!
 }
-console.log('hash >>>', getHash('Hello'));
 
 function getRandomStr() {
-  return Math.floor(Math.random() * Number.MAX_SAFE_INTEGER).toString(16);
+  return crypto.randomBytes(8).toString('hex');
 }
-console.log('random number - hex', getRandomStr());
 
-function startBirthdayBound() {
+function startBirthdayBound(hashAlgorithm) {
   while (true) {
     const randStr = getRandomStr();
-    const currentHash = getHash(randStr);
+    const currentHash = getHash(randStr, hashAlgorithm);
 
-    if (hashLibrary[currentHash] && hashLibrary[currentHash] !== randStr) {
-      console.log('✅ Success!!! Birthday Bound Atttack has done!');
-      console.log(`🟢 First string - '${hashLibrary[currentHash]}'`);
+    if (hashStorage[currentHash] && hashStorage[currentHash] !== randStr) {
+      console.log('✅ Success!!! Birthday Bound Attack has done!');
+      console.log(`⏱ Attempts: ${attempts}`);
+      console.log(`🟢 First string - '${hashStorage[currentHash]}'`);
       console.log(`🟢 Second string - '${randStr}'`);
-      console.log(`🔓 Matching Hash: '${currentHash}'`);
+      console.log(`🎯  Matching Hash: '${currentHash}'`);
       break;
     } else {
-      hashLibrary[currentHash] = randStr;
+      hashStorage[currentHash] = randStr;
+    }
+
+    if (attempts % 10000 === 0 && attempts > 0) {
+      console.log(`PASS ✅ : "${attempts}" strings`);
     }
 
     attempts++;
   }
 }
+
+startBirthdayBound(hashMD5);
