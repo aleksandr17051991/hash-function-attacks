@@ -27,7 +27,8 @@ function startBirthdayBound(hashAlgorithm) {
 
     if (hashStorage[currentHash] && hashStorage[currentHash] !== randStr) {
       console.log('✅ Success!!! Birthday Bound Attack has done!');
-      console.log(`⏱ Attempts: ${attempts}`);
+      console.log(`✎ᝰ. Hash algorithm: ${hashAlgorithm.toUpperCase()}`);
+      console.log(`🕓 Attempts: ${attempts}`);
       console.log(`🟢 First string - '${hashStorage[currentHash]}'`);
       console.log(`🟢 Second string - '${randStr}'`);
       console.log(`🎯  Matching Hash: '${currentHash}'`);
